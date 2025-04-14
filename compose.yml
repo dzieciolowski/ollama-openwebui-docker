@@ -1,0 +1,46 @@
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_ORIGINS=*
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - ollama-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: always
+    ports:
+      - "3000:8080"
+    environment:
+      - CORS_ALLOW_ORIGIN=*
+    volumes:
+      - open-webui-data:/app/backend/data
+    networks:
+      - ollama-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  ollama-data:
+    name: ollama-data
+  open-webui-data:
+    name: open-webui-data
+
+networks:
+  ollama-network:
+    name: ollama-network
+    driver: bridge
