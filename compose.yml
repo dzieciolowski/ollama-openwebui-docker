@@ -18,7 +18,6 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
@@ -44,3 +43,5 @@ networks:
   ollama-network:
     name: ollama-network
     driver: bridge
+
+name: ollama
